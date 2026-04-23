@@ -1,0 +1,38 @@
+# Development Dockerfile for Codensest
+FROM python:3.11-slim
+
+# Set environment variables
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PIP_NO_CACHE_DIR=0
+
+# Set work directory
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    gcc \
+    postgresql-client \
+    libpq-dev \
+    curl \
+    watchman \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Python dependencies
+COPY requirements.txt .
+RUN pip install --upgrade pip && \
+    pip install -r requirements.txt && \
+    pip install psycopg2-binary
+
+# Copy project
+COPY . .
+
+# Create uploads and media directories with proper permissions
+RUN mkdir -p /app/uploads /app/media /app/staticfiles && \
+    chmod -R 755 /app/uploads /app/media /app/staticfiles
+
+# Expose port
+EXPOSE 8000
+
+# Run development server
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]

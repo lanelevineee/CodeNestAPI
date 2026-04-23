@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: chatroom-frontend
+    ports:
+      - "3000:80"
+    environment:
+      - API_URL=http://localhost:8000/api
+    depends_on:
+      - backend
+    networks:
+      - chatroom-network
+    restart: unless-stopped
+
+  backend:
+    image: chatroom-backend:latest
+    container_name: chatroom-backend
+    ports:
+      - "8000:8000"
+    environment:
+      - DEBUG=False
+      - ALLOWED_HOSTS=*
+      - CORS_ORIGIN_WHITELIST=http://localhost:3000
+    volumes:
+      - ../media:/app/media
+      - ../static:/app/static
+    networks:
+      - chatroom-network
+    restart: unless-stopped
+
+networks:
+  chatroom-network:
+    driver: bridge
