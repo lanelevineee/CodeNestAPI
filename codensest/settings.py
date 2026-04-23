@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     # Install Apps
     'users.apps.UsersConfig',
     'rooms.apps.RoomsConfig',
+    'chat.apps.ChatConfig',
     
     # Third-party Apps
     'rest_framework',
@@ -52,6 +53,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt.token_blacklist',
     'corsheaders',
     'drf_yasg',
+    'channels',
 ]
 
 MIDDLEWARE = [
@@ -226,3 +228,11 @@ ACCOUNT_ACTIVATION_DAYS = 1
 
 # Site Configuration
 SITE_ID = 1
+
+# Channels Configuration (WebSocket support)
+ASGI_APPLICATION = 'codensest.asgi.application'
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels.layers.InMemoryChannelLayer',
+    },
+}
