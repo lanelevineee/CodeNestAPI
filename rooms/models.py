@@ -64,4 +64,71 @@ class Membership(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.room.name} ({self.role})"
+
+
+class Message(models.Model):
+    """Model for chat messages in rooms."""
+    
+    room = models.ForeignKey(Room, on_delete=models.CASCADE, related_name='messages')
+    sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sent_messages')
+    content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    is_edited = models.BooleanField(default=False)
+    
+    class Meta:
+        verbose_name = 'Message'
+        verbose_name_plural = 'Messages'
+        ordering = ['created_at']
+        indexes = [
+            models.Index(fields=['room', '-created_at']),
+        ]
+    
+    def __str__(self):
+        return f"{self.sender.username}: {self.content[:50]}"
+
+
+class MessageReaction(models.Model):
+    """Model for message reactions (emoji reactions)."""
+    
+    REACTION_CHOICES = [
+        ('👍', 'Thumbs Up'),
+        ('👎', 'Thumbs Down'),
+        ('❤️', 'Heart'),
+        ('😂', 'Laugh'),
+        ('😮', 'Surprised'),
+        ('😢', 'Sad'),
+        ('🎉', 'Party'),
+        ('🔥', 'Fire'),
+    ]
+    
+    message = models.ForeignKey(Message, on_delete=models.CASCADE, related_name='reactions')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='message_reactions')
+    reaction = models.CharField(max_length=10, choices=REACTION_CHOICES)
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        verbose_name = 'Message Reaction'
+        verbose_name_plural = 'Message Reactions'
+        unique_together = ['message', 'user', 'reaction']
+        ordering = ['-created_at']
+    
+    def __str__(self):
+        return f"{self.user.username} reacted {self.reaction} to message"
+
+
+class MessageThread(models.Model):
+    """Model for threaded replies to messages."""
+    
+    parent_message = models.ForeignKey(Message, on_delete=models.CASCADE, related_name='threads')
+    message = models.OneToOneField(Message, on_delete=models.CASCADE, related_name='thread')
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        verbose_name = 'Message Thread'
+        verbose_name_plural = 'Message Threads'
+        ordering = ['created_at']
+    
+    def __str__(self):
+        return f"Thread on message {self.parent_message.id}"
     

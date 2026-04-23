@@ -31,7 +31,17 @@ db.sqlite3-journal
 .vscode/
 .idea/
 
+# Environment
+.env
+.env.local
+.env.*
+
 # OS
 .DS_Store
 Thumbs.db
+
+# Coverage
+.coverage
+htmlcov/
+.coverage.*
 ```
