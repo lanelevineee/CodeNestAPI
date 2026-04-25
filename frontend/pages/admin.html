@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - CodeNest</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/admin.css">
+</head>
+<body>
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <aside class="admin-sidebar">
+            <div class="sidebar-header">
+                <h1 class="logo">CodeNest Admin</h1>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="#dashboard" class="nav-item active" data-page="dashboard">
+                    <span class="icon">📊</span>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#users" class="nav-item" data-page="users">
+                    <span class="icon">👥</span>
+                    <span>Users</span>
+                </a>
+                <a href="#rooms" class="nav-item" data-page="rooms">
+                    <span class="icon">🏠</span>
+                    <span>Rooms</span>
+                </a>
+                <a href="#messages" class="nav-item" data-page="messages">
+                    <span class="icon">💬</span>
+                    <span>Messages</span>
+                </a>
+                <a href="#analytics" class="nav-item" data-page="analytics">
+                    <span class="icon">📈</span>
+                    <span>Analytics</span>
+                </a>
+                <a href="#settings" class="nav-item" data-page="settings">
+                    <span class="icon">⚙️</span>
+                    <span>Settings</span>
+                </a>
+                <a href="#monitoring" class="nav-item" data-page="monitoring">
+                    <span class="icon">🖥️</span>
+                    <span>Server Monitor</span>
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <button id="logoutBtn" class="btn btn-outline btn-block">
+                    <span class="icon">🚪</span>
+                    <span>Logout</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="admin-main">
+            <!-- Top Bar -->
+            <header class="admin-header">
+                <div class="header-left">
+                    <button class="btn-icon menu-toggle" id="menuToggle">
+                        <span>☰</span>
+                    </button>
+                    <h2 id="pageTitle">Dashboard</h2>
+                </div>
+                <div class="header-right">
+                    <div class="search-box">
+                        <input type="text" placeholder="Search..." id="globalSearch">
+                        <span class="icon">🔍</span>
+                    </div>
+                    <div class="user-menu">
+                        <div class="avatar" id="userAvatar">A</div>
+                        <span id="userName">Admin</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Dashboard Content -->
+            <div id="dashboardPage" class="page-content active">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon blue">👥</div>
+                        <div class="stat-info">
+                            <h3 id="totalUsers">0</h3>
+                            <p>Total Users</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon green">🏠</div>
+                        <div class="stat-info">
+                            <h3 id="totalRooms">0</h3>
+                            <p>Active Rooms</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon purple">💬</div>
+                        <div class="stat-info">
+                            <h3 id="totalMessages">0</h3>
+                            <p>Messages Today</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon orange">📈</div>
+                        <div class="stat-info">
+                            <h3 id="activeSessions">0</h3>
+                            <p>Active Sessions</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dashboard-grid">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Recent Users</h3>
+                            <a href="#users" class="btn-link">View All</a>
+                        </div>
+                        <div class="card-body">
+                            <table class="data-table" id="recentUsersTable">
+                                <thead>
+                                    <tr>
+                                        <th>User</th>
+                                        <th>Email</th>
+                                        <th>Status</th>
+                                        <th>Joined</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>System Health</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="health-grid">
+                                <div class="health-item">
+                                    <span class="health-label">Database</span>
+                                    <span class="health-status status-good">● Online</span>
+                                </div>
+                                <div class="health-item">
+                                    <span class="health-label">Redis</span>
+                                    <span class="health-status status-good">● Connected</span>
+                                </div>
+                                <div class="health-item">
+                                    <span class="health-label">API</span>
+                                    <span class="health-status status-good">● Running</span>
+                                </div>
+                                <div class="health-item">
+                                    <span class="health-label">WebSocket</span>
+                                    <span class="health-status status-warning">● Limited</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Recent Activity</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="activity-list" id="activityList">
+                                <div class="activity-item">
+                                    <span class="activity-icon">👤</span>
+                                    <div class="activity-content">
+                                        <p>New user registered</p>
+                                        <small>2 minutes ago</small>
+                                    </div>
+                                </div>
+                                <div class="activity-item">
+                                    <span class="activity-icon">🏠</span>
+                                    <div class="activity-content">
+                                        <p>Room created: "Python Developers"</p>
+                                        <small>5 minutes ago</small>
+                                    </div>
+                                </div>
+                                <div class="activity-item">
+                                    <span class="activity-icon">💬</span>
+                                    <div class="activity-content">
+                                        <p>Message sent in "General Chat"</p>
+                                        <small>10 minutes ago</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card full-width">
+                        <div class="card-header">
+                            <h3>Server Metrics</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="metrics-grid">
+                                <div class="metric">
+                                    <div class="metric-header">
+                                        <span>CPU Usage</span>
+                                        <span id="cpuUsage">45%</span>
+                                    </div>
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: 45%"></div>
+                                    </div>
+                                </div>
+                                <div class="metric">
+                                    <div class="metric-header">
+                                        <span>Memory Usage</span>
+                                        <span id="memoryUsage">62%</span>
+                                    </div>
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: 62%"></div>
+                                    </div>
+                                </div>
+                                <div class="metric">
+                                    <div class="metric-header">
+                                        <span>Disk Usage</span>
+                                        <span id="diskUsage">38%</span>
+                                    </div>
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: 38%"></div>
+                                    </div>
+                                </div>
+                                <div class="metric">
+                                    <div class="metric-header">
+                                        <span>Request Rate</span>
+                                        <span id="requestRate">125/min</span>
+                                    </div>
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: 75%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Users Page -->
+            <div id="usersPage" class="page-content">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>User Management</h3>
+                        <button class="btn btn-primary" id="addUserBtn">Add User</button>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-filters">
+                            <input type="text" placeholder="Search users..." class="filter-input" id="userSearch">
+                            <select class="filter-select" id="userStatusFilter">
+                                <option value="">All Status</option>
+                                <option value="active">Active</option>
+                                <option value="inactive">Inactive</option>
+                                <option value="banned">Banned</option>
+                            </select>
+                        </div>
+                        <table class="data-table" id="usersTable">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>User</th>
+                                    <th>Email</th>
+                                    <th>Status</th>
+                                    <th>Role</th>
+                                    <th>Joined</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                        <div class="pagination" id="usersPagination"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rooms Page -->
+            <div id="roomsPage" class="page-content">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Room Management</h3>
+                        <button class="btn btn-primary" id="addRoomBtn">Create Room</button>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-filters">
+                            <input type="text" placeholder="Search rooms..." class="filter-input" id="roomSearch">
+                            <select class="filter-select" id="roomTypeFilter">
+                                <option value="">All Types</option>
+                                <option value="public">Public</option>
+                                <option value="private">Private</option>
+                            </select>
+                        </div>
+                        <table class="data-table" id="roomsTable">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Creator</th>
+                                    <th>Members</th>
+                                    <th>Type</th>
+                                    <th>Status</th>
+                                    <th>Created</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                        <div class="pagination" id="roomsPagination"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Messages Page -->
+            <div id="messagesPage" class="page-content">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Message Monitoring</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="message-stats">
+                            <div class="stat-box">
+                                <h4>Total Messages</h4>
+                                <p id="totalMsgCount">0</p>
+                            </div>
+                            <div class="stat-box">
+                                <h4>Today</h4>
+                                <p id="todayMsgCount">0</p>
+                            </div>
+                            <div class="stat-box">
+                                <h4>Avg per Day</h4>
+                                <p id="avgMsgCount">0</p>
+                            </div>
+                        </div>
+                        <div class="message-list" id="messageList"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Analytics Page -->
+            <div id="analyticsPage" class="page-content">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Analytics Overview</h3>
+                        <select class="filter-select" id="dateRange">
+                            <option value="7">Last 7 Days</option>
+                            <option value="30">Last 30 Days</option>
+                            <option value="90">Last 90 Days</option>
+                        </select>
+                    </div>
+                    <div class="card-body">
+                        <div class="charts-grid">
+                            <div class="chart-container">
+                                <h4>User Growth</h4>
+                                <canvas id="userGrowthChart"></canvas>
+                            </div>
+                            <div class="chart-container">
+                                <h4>Activity Timeline</h4>
+                                <canvas id="activityChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings Page -->
+            <div id="settingsPage" class="page-content">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>System Settings</h3>
+                    </div>
+                    <div class="card-body">
+                        <form id="settingsForm" class="settings-form">
+                            <div class="form-group">
+                                <label>Site Name</label>
+                                <input type="text" value="CodeNest" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label>Maintenance Mode</label>
+                                <label class="switch">
+                                    <input type="checkbox">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <label>Registration</label>
+                                <label class="switch">
+                                    <input type="checkbox" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Monitoring Page -->
+            <div id="monitoringPage" class="page-content">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Server Monitoring</h3>
+                        <button class="btn btn-primary" id="refreshMetrics">Refresh</button>
+                    </div>
+                    <div class="card-body">
+                        <div class="server-status">
+                            <div class="status-indicator online">
+                                <span class="dot"></span>
+                                <span>Server Online</span>
+                            </div>
+                            <div class="uptime">
+                                <strong>Uptime:</strong> <span id="serverUptime">24d 12h 35m</span>
+                            </div>
+                        </div>
+                        <div class="monitoring-grid">
+                            <div class="monitor-card">
+                                <h4>Performance</h4>
+                                <div class="monitor-data">
+                                    <div class="data-row">
+                                        <span>Response Time</span>
+                                        <span id="responseTime">45ms</span>
+                                    </div>
+                                    <div class="data-row">
+                                        <span>Requests/sec</span>
+                                        <span id="requestsPerSec">25</span>
+                                    </div>
+                                    <div class="data-row">
+                                        <span>Error Rate</span>
+                                        <span id="errorRate">0.1%</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="monitor-card">
+                                <h4>Resources</h4>
+                                <div class="monitor-data">
+                                    <div class="data-row">
+                                        <span>CPU</span>
+                                        <span id="monitorCpu">45%</span>
+                                    </div>
+                                    <div class="data-row">
+                                        <span>Memory</span>
+                                        <span id="monitorMemory">2.4GB / 4GB</span>
+                                    </div>
+                                    <div class="data-row">
+                                        <span>Disk</span>
+                                        <span id="monitorDisk">120GB / 500GB</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="monitor-card">
+                                <h4>Database</h4>
+                                <div class="monitor-data">
+                                    <div class="data-row">
+                                        <span>Connections</span>
+                                        <span id="dbConnections">15</span>
+                                    </div>
+                                    <div class="data-row">
+                                        <span>Query Time</span>
+                                        <span id="queryTime">12ms</span>
+                                    </div>
+                                    <div class="data-row">
+                                        <span>Slow Queries</span>
+                                        <span id="slowQueries">2</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="monitor-card">
+                                <h4>Cache (Redis)</h4>
+                                <div class="monitor-data">
+                                    <div class="data-row">
+                                        <span>Hit Rate</span>
+                                        <span id="cacheHitRate">94%</span>
+                                    </div>
+                                    <div class="data-row">
+                                        <span>Memory</span>
+                                        <span id="cacheMemory">256MB</span>
+                                    </div>
+                                    <div class="data-row">
+                                        <span>Keys</span>
+                                        <span id="cacheKeys">1,245</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="logs-section">
+                            <h4>Recent Logs</h4>
+                            <div class="logs-container" id="logsContainer">
+                                <div class="log-entry info">
+                                    <span class="log-time">10:45:23</span>
+                                    <span class="log-level">INFO</span>
+                                    <span class="log-message">Server started successfully</span>
+                                </div>
+                                <div class="log-entry success">
+                                    <span class="log-time">10:46:12</span>
+                                    <span class="log-level">SUCCESS</span>
+                                    <span class="log-message">Database backup completed</span>
+                                </div>
+                                <div class="log-entry warning">
+                                    <span class="log-time">10:47:05</span>
+                                    <span class="log-level">WARNING</span>
+                                    <span class="log-message">High memory usage detected</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../js/api.js"></script>
+    <script src="../js/admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,67 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database (Development)
+  db:
+    image: postgres:15-alpine
+    container_name: codensest_dev_db
+    volumes:
+      - postgres_dev_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: codensest
+      POSTGRES_USER: codensest
+      POSTGRES_PASSWORD: devpassword123
+    ports:
+      - "5432:5432"
+    networks:
+      - codensest_dev_network
+
+  # Redis for Channels (Development)
+  redis:
+    image: redis:7-alpine
+    container_name: codensest_dev_redis
+    ports:
+      - "6379:6379"
+    networks:
+      - codensest_dev_network
+
+  # Django Application (Development)
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: codensest_dev_web
+    depends_on:
+      - db
+      - redis
+    volumes:
+      - .:/app
+      - dev_static_volume:/app/staticfiles
+      - dev_media_volume:/app/media
+      - dev_uploads_volume:/app/uploads
+    ports:
+      - "8000:8000"
+    environment:
+      DEBUG: "True"
+      SECRET_KEY: "django-insecure-dev-key-change-in-production"
+      DATABASE_URL: postgres://codensest:devpassword123@db:5432/codensest
+      REDIS_URL: redis://redis:6379/0
+      EMAIL_BACKEND: django.core.mail.backends.console.EmailBackend
+      ALLOWED_HOSTS: "*"
+      CORS_ALLOW_ALL: "True"
+    command: >
+      sh -c "python manage.py migrate &&
+             python manage.py runserver 0.0.0.0:8000"
+    networks:
+      - codensest_dev_network
+    restart: unless-stopped
+
+volumes:
+  postgres_dev_data:
+  dev_static_volume:
+  dev_media_volume:
+  dev_uploads_volume:
+
+networks:
+  codensest_dev_network:
+    driver: bridge
